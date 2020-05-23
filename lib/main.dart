@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:flame/time.dart';
+import 'package:flame/flame.dart';
 
-void main() {
-  runApp(GameWidget());
+import 'dart:math';
+
+void main() async{
+  Size size = await Flame.util.initialDimensions();
+  runApp(GameWidget(size));
 }
 
 class GameWidget extends StatelessWidget{
 
+  final Size size;
+  GameWidget(this.size);
+
   @override
   Widget build(BuildContext context) {
-    final game = SpaceShooterGame();
+    final game = SpaceShooterGame(size);
     return GestureDetector(
       onPanUpdate: (DragUpdateDetails details)
     {
@@ -38,6 +45,8 @@ class GameObject {
 
 class SpaceShooterGame extends Game{
 
+  final Size screenSize;
+
   GameObject player;
 
   Timer enemyCreator;
@@ -45,8 +54,10 @@ class SpaceShooterGame extends Game{
   static const enemy_speed = 400;
   List<GameObject> enemies = [];
 
+  Random random = Random();
 
-  SpaceShooterGame(){
+
+  SpaceShooterGame(this.screenSize){
     player = GameObject()
         ..position = Rect.fromLTWH(200, 200, 100, 100);
 
@@ -54,7 +65,7 @@ class SpaceShooterGame extends Game{
 
       enemies.add(
         GameObject()
-            ..position = Rect.fromLTWH(0, 0, 50, 50)
+            ..position = Rect.fromLTWH((screenSize.width - 50) * random.nextDouble(), 0, 50, 50)
 
       );
 
